@@ -23,7 +23,6 @@ import type {
 Animated.addWhitelistedNativeProps({
   width: true,
   stroke: true,
-  backgroundColor: true,
 });
 
 interface AnimatedTabBarProps
