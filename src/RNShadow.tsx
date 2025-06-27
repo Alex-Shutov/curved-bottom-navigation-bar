@@ -1,18 +1,34 @@
-import { Platform, requireNativeComponent, View,ViewProps } from 'react-native';
-import type { ComponentType } from 'react';
+import React from 'react';
+import { View, Platform, StyleSheet, ViewProps } from 'react-native';
 
-
-let RNShadow: ComponentType<ViewProps>;
-
-if (Platform.OS === 'android') {
-  try {
-    RNShadow = requireNativeComponent('RNShadow') as ComponentType<ViewProps>;
-  } catch (e) {
-    console.warn('RNShadow native component not found, using fallback');
-    RNShadow = View;
+const styles = StyleSheet.create({
+  androidShadow: {
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   }
-} else {
-  RNShadow = View;
+});
+
+// Создаем классовый компонент, который соответствует типу View
+class AndroidShadowView extends React.Component<ViewProps> {
+  static forceTouchAvailable = false; // Добавляем обязательное статическое свойство
+
+  render() {
+    const { style, children, ...rest } = this.props;
+    return (
+      <View style={[styles.androidShadow, style]} {...rest}>
+        {children}
+      </View>
+    );
+  }
 }
 
-export { RNShadow }
+// Явно приводим тип к нужному виду
+const RNShadow = Platform.select({
+  android: AndroidShadowView as typeof View,
+  ios: View,
+  default: View,
+});
+
+export { RNShadow };
